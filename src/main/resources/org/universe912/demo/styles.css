@@ -1,0 +1,63 @@
+.root {
+    -fx-font-family: "Avenir Next", "PingFang SC", sans-serif;
+}
+
+.app-shell {
+    -fx-background-color:
+        radial-gradient(center 50% 42%, radius 72%, #f7ead0 0%, #d6b477 58%, #a9773d 100%);
+    -fx-padding: 48;
+}
+
+.content-card {
+    -fx-background-color: rgba(255, 252, 244, 0.94);
+    -fx-background-radius: 24;
+    -fx-border-color: rgba(105, 66, 29, 0.18);
+    -fx-border-radius: 24;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(73, 43, 17, 0.28), 32, 0.22, 0, 12);
+}
+
+.title {
+    -fx-font-family: "Songti SC", "STSong", serif;
+    -fx-font-size: 54px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5a2d1f;
+}
+
+.river-mark {
+    -fx-font-family: "Kaiti SC", "STKaiti", serif;
+    -fx-font-size: 24px;
+    -fx-text-fill: #a33b2f;
+    -fx-padding: 4 20 8 20;
+    -fx-border-color: #a33b2f transparent #a33b2f transparent;
+}
+
+.subtitle {
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3f342b;
+}
+
+.status {
+    -fx-font-size: 14px;
+    -fx-text-fill: #74675b;
+    -fx-text-alignment: center;
+}
+
+.primary-button {
+    -fx-background-color: #9d3028;
+    -fx-background-radius: 8;
+    -fx-padding: 11 28;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #fffaf0;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #b94338;
+}
+
+.primary-button:pressed {
+    -fx-background-color: #7f251f;
+}
