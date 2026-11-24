@@ -11,7 +11,7 @@ public final class Move {
     private Move() {
     }
 
-    public static Board move(Board board, Displacement displacement) {
+    public static MoveResult move(Board board, Displacement displacement) {
         if (board == null || displacement == null) {
             throw new IllegalArgumentException("Board and displacement must not be null");
         }
@@ -22,18 +22,16 @@ public final class Move {
         Piece movingPiece = board.pieceAt(start).orElseThrow(
                 () -> new IllegalArgumentException("No piece at the starting position"));
         if (movingPiece.pieceSide != board.currentSide) {
-            throw new IllegalArgumentException(
-                    "Not able to move the %s side piece when it's %s turn"
-                            .formatted(movingPiece.pieceSide.name(), board.currentSide.name()));
+            return MoveResult.rejected(MoveSignal.WRONG_MOV_SIDE);
         }
 
         Optional<Piece> capturedPiece = board.pieceAt(target);
         if (capturedPiece.isPresent()
                 && capturedPiece.get().pieceSide == movingPiece.pieceSide) {
-            throw new IllegalArgumentException("A piece cannot capture a piece from its own side");
+            return MoveResult.rejected(MoveSignal.WRONG_CAP_SIDE);
         }
         if (!checkPieceMove(board, movingPiece, displacement)) {
-            throw illegalMove(movingPiece, displacement);
+            return MoveResult.rejected(MoveSignal.ILLEGAL_MOVE);
         }
 
         Board movedBoard = board.copy();
@@ -41,13 +39,11 @@ public final class Move {
         movedBoard.setPieceAt(target, movingPiece);
 
         if (isGeneralInCheck(movedBoard, movingPiece.pieceSide)) {
-            throw new IllegalArgumentException(
-                    "Illegal move: the %s general would be in check"
-                            .formatted(movingPiece.pieceSide.name()));
+            return MoveResult.rejected(MoveSignal.ILLEGAL_MOVE);
         }
 
         movedBoard.switchCurrentSide();
-        return movedBoard;
+        return MoveResult.accepted(movedBoard);
     }
 
     static boolean checkChariotMove(Board board, Displacement displacement) {
@@ -280,12 +276,5 @@ public final class Move {
         return position.x() >= minimumRow && position.x() <= maximumRow
                 && position.y() >= PALACE_MIN_COLUMN
                 && position.y() <= PALACE_MAX_COLUMN;
-    }
-
-    private static IllegalArgumentException illegalMove(
-            Piece piece, Displacement displacement) {
-        return new IllegalArgumentException(
-                "Illegal move of piece %s to move: %s"
-                        .formatted(piece.pieceType.name(), displacement));
     }
 }
