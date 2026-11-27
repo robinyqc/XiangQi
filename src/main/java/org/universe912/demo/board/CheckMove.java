@@ -2,16 +2,16 @@ package org.universe912.demo.board;
 
 import java.util.Optional;
 
-public final class Move {
+public final class CheckMove {
     private static final int PALACE_MIN_ROW = 0;
     private static final int PALACE_MAX_ROW = 2;
     private static final int PALACE_MIN_COLUMN = 3;
     private static final int PALACE_MAX_COLUMN = 5;
 
-    private Move() {
+    private CheckMove() {
     }
 
-    public static MoveResult move(Board board, Displacement displacement) {
+    public static CheckSignal check(Board board, Displacement displacement) {
         if (board == null || displacement == null) {
             throw new IllegalArgumentException("Board and displacement must not be null");
         }
@@ -22,16 +22,16 @@ public final class Move {
         Piece movingPiece = board.pieceAt(start).orElseThrow(
                 () -> new IllegalArgumentException("No piece at the starting position"));
         if (movingPiece.pieceSide != board.currentSide) {
-            return MoveResult.rejected(MoveSignal.WRONG_MOV_SIDE);
+            return CheckSignal.WRONG_MOV_SIDE;
         }
 
         Optional<Piece> capturedPiece = board.pieceAt(target);
         if (capturedPiece.isPresent()
                 && capturedPiece.get().pieceSide == movingPiece.pieceSide) {
-            return MoveResult.rejected(MoveSignal.WRONG_CAP_SIDE);
+            return CheckSignal.WRONG_CAP_SIDE;
         }
         if (!checkPieceMove(board, movingPiece, displacement)) {
-            return MoveResult.rejected(MoveSignal.ILLEGAL_MOVE);
+            return CheckSignal.ILLEGAL_MOVE;
         }
 
         Board movedBoard = board.copy();
@@ -39,11 +39,10 @@ public final class Move {
         movedBoard.setPieceAt(target, movingPiece);
 
         if (isGeneralInCheck(movedBoard, movingPiece.pieceSide)) {
-            return MoveResult.rejected(MoveSignal.ILLEGAL_MOVE);
+            return CheckSignal.ILLEGAL_MOVE;
         }
 
-        movedBoard.switchCurrentSide();
-        return MoveResult.accepted(movedBoard);
+        return CheckSignal.ACCEPTED;
     }
 
     static boolean checkChariotMove(Board board, Displacement displacement) {
